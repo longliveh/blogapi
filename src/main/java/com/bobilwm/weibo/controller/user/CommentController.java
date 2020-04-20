@@ -1,11 +1,14 @@
 package com.bobilwm.weibo.controller.user;
 
 import com.bobilwm.weibo.controller.respmsg.Result;
+import com.bobilwm.weibo.controller.respmsg.ResultCode;
 import com.bobilwm.weibo.entity.User;
 import com.bobilwm.weibo.entity.blog.Blog;
+import com.bobilwm.weibo.service.BlogService;
 import com.bobilwm.weibo.service.CommentService;
 import com.bobilwm.weibo.service.UserService;
 import net.sf.json.JSONObject;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,7 +26,31 @@ public class CommentController {
     CommentService commentService;
 
     @Autowired
+    BlogService blogService;
+
+    @Autowired
     private UserService userService;
+
+    @PostMapping(value = "/likeComment")
+    public Result likeComment(@RequestBody JSONObject json)
+    {
+        Integer commentid = json.getInt("commentid");
+        Boolean isliked = json.getBoolean("isliked");
+        User user = (User)SecurityUtils.getSubject().getPrincipal();
+        if (isliked==false)
+        {
+            if (blogService.likeBlogOrComment(user.getId(),commentid,1))
+                return Result.success();
+            else return Result.error(ResultCode.ERROR);
+        }else if (isliked==true)
+        {
+            if (blogService.unlikeBlogOrComment(user.getId(),commentid,1))
+                return Result.success();
+            else return Result.error(ResultCode.ERROR);
+        }
+        return Result.error(ResultCode.ERROR);
+
+    }
 
     @PostMapping(value = "/getcomment")
     public Result getBlog(@RequestBody JSONObject json)

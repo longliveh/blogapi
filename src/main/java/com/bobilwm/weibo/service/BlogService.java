@@ -10,5 +10,9 @@ public interface BlogService {
     Boolean addBlog(Blog blog);
     Long addComment(Comment comment);
     List<Blog> getBlogByUserid(Integer[] userids);
-    Map getBlogCount(Integer blogid);
+    Map getBlogDetail(Integer blogid);
+    Integer getBlogCount(Integer userid);
+    List<Blog> getBlogByRandom();
+    Boolean likeBlogOrComment(Integer self_userid,Integer toid,Integer type);
+    Boolean unlikeBlogOrComment(Integer self_userid,Integer toid,Integer type);
 }

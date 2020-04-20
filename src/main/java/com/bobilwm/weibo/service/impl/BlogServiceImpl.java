@@ -2,8 +2,10 @@ package com.bobilwm.weibo.service.impl;
 
 import com.bobilwm.weibo.entity.blog.Blog;
 import com.bobilwm.weibo.entity.blog.Comment;
+import com.bobilwm.weibo.entity.blog.LikeTo;
 import com.bobilwm.weibo.repository.BlogRepository;
 import com.bobilwm.weibo.repository.CommentRepository;
+import com.bobilwm.weibo.repository.LikeToRepository;
 import com.bobilwm.weibo.service.BlogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,12 +26,22 @@ public class BlogServiceImpl implements BlogService {
     @Autowired
     CommentRepository commentRepository;
 
+    @Autowired
+    LikeToRepository likeToRepository;
+
     @Override
     public List<Blog> getBlogByUserid(Integer[] userids) {
         List<Blog> blogs = new ArrayList<>();
         for (int i = 0; i < userids.length; i++) {
             blogs.addAll(blogRepository.findAllByUseridOrderByDate(userids[i]));
         }
+        return blogs;
+    }
+
+    @Override
+    public List<Blog> getBlogByRandom() {
+        List<Blog> blogs = new ArrayList<>();
+        blogs.addAll(blogRepository.findAll());
         return blogs;
     }
 
@@ -53,14 +65,68 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    public Map getBlogCount(Integer blogid) {
+    public Map getBlogDetail(Integer blogid) {
         Integer stars = blogRepository.getBlogStar(blogid);
         Integer commentcount = commentRepository.countCommentByBlogId(blogid);
-        Integer sharecount = 1;
+        Integer sharecount = 0;
         Map<String,Integer> map = new HashMap();
         map.put("stars",stars);
         map.put("commentCount",commentcount);
         map.put("shareCount",sharecount);
         return map;
+    }
+
+    @Override
+    public Boolean likeBlogOrComment(Integer self_userid,Integer toid, Integer type) {
+        LikeTo likeTo = null;
+        if (type == 0) {
+            likeTo = LikeTo.LikeToBlog(self_userid, toid);
+            LikeTo res = likeToRepository.save(likeTo);
+            Integer affectrow = blogRepository.likeBlog(toid);
+            if (res.getId() != 0 && affectrow > 0) {
+                return true;
+            }
+        }
+        if(type == 1)
+        {
+            likeTo = LikeTo.LikeToComment(self_userid,toid);
+            LikeTo res = likeToRepository.save(likeTo);
+            Integer affectrow = commentRepository.likeComment(toid);
+            if (res.getId()!=0&&affectrow>0)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public Boolean unlikeBlogOrComment(Integer self_userid, Integer toid, Integer type) {
+        LikeTo likeTo = null;
+        if (type == 0) {
+
+            likeTo = LikeTo.LikeToBlog(self_userid, toid);
+            likeToRepository.deleteByFAndTAndType(likeTo.getF(),likeTo.getT(),likeTo.getType());
+            Integer affectrow = blogRepository.unlikeBlog(toid);
+            if (affectrow > 0) {
+                return true;
+            }
+        }
+        if(type == 1)
+        {
+            likeTo = LikeTo.LikeToComment(self_userid,toid);
+            likeToRepository.deleteByFAndTAndType(likeTo.getF(),likeTo.getT(),likeTo.getType());
+            Integer affectrow = commentRepository.unlikeComment(toid);
+            if (affectrow>0)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public Integer getBlogCount(Integer userid) {
+        return blogRepository.countByUserid(userid);
     }
 }

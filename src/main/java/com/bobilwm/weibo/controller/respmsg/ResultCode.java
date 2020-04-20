@@ -21,6 +21,9 @@ public enum ResultCode {
     USER_HAS_EXISTED(20005, "用户已存在"),
     USER_Register_ERROR(20006, "用户注册错误"),
     USER_IN_Other_PLACE(20007,"您已在其它地方登录"),
+    USER_FOCUS_ERROR(20008,"关注失败"),
+    USER_FOCUS_TRUE(20009,"您已关注该用户"),
+    USER_FOCUS_FALSE(20010,"您未关注该用户"),
 
     /* 业务错误：30001-39999 */
     SPECIFIED_QUESTIONED_USER_NOT_EXIST(30001, "某业务出现问题"),

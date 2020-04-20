@@ -23,4 +23,12 @@ public interface CommentRepository extends JpaRepository<Comment,Integer> {
 
     Integer countCommentByBlogId(Integer blogid);
 
+    @Modifying
+    @Query(value = "UPDATE comment SET star = star+1 WHERE id = ?1",nativeQuery = true)
+    Integer likeComment(Integer commentid);
+
+    @Modifying
+    @Query(value = "UPDATE comment SET star = star-1 WHERE id = ?1",nativeQuery = true)
+    Integer unlikeComment(Integer commentid);
+
 }

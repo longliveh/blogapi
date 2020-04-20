@@ -10,6 +10,7 @@ import java.util.List;
 
 import javax.persistence.*;
 
+@ToString
 @Getter
 @Setter
 @Entity

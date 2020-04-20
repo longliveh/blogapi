@@ -22,6 +22,8 @@ public class ShiroRealm extends AuthorizingRealm {
     @Lazy
     private UserServiceImpl userService;
 
+
+
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();

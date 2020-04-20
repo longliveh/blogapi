@@ -59,7 +59,7 @@ public class ShiroConfig {
 //        filterChainDefinitionMap.put("/authc/admin", "roles[admin]");
 //        filterChainDefinitionMap.put("/authc/renewable", "perms[Create,Update]");
 //        filterChainDefinitionMap.put("/authc/removable", "perms[Delete]");
-        filterChainDefinitionMap.put("/logout", "logout");
+//        filterChainDefinitionMap.put("/logout", "logout");
         filterChainDefinitionMap.put("/**", "authc,kickout");//测试注释
 
 
@@ -97,6 +97,7 @@ public class ShiroConfig {
     public RedisCacheManager cacheManager() {
         RedisCacheManager redisCacheManager = new RedisCacheManager();
         redisCacheManager.setRedisManager(redisManager());
+//        redisCacheManager.setPrincipalIdFieldName("id");
         return redisCacheManager;
     }
 

@@ -18,7 +18,18 @@ public interface BlogRepository extends JpaRepository<Blog,Integer> {
     Integer addComment(Integer blogId,String content,Integer level,Integer from,Integer to,Date date);
 
     List<Blog> findAllByUseridOrderByDate(Integer userId);
+
     @Query(value = "SELECT star FROM `blog` WHERE id = ?1",nativeQuery = true)
     Integer getBlogStar(Integer blogig);
+
+    @Modifying
+    @Query(value = "UPDATE blog SET star = star+1 WHERE id = ?1",nativeQuery = true)
+    Integer likeBlog(Integer blogid);
+
+    @Modifying
+    @Query(value = "UPDATE blog SET star = star-1 WHERE id = ?1",nativeQuery = true)
+    Integer unlikeBlog(Integer blogid);
+
+    Integer countByUserid(Integer userid);
 
 }
