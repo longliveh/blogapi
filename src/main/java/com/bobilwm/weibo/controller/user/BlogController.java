@@ -10,6 +10,7 @@ import com.bobilwm.weibo.utils.FileUtil;
 import javafx.scene.layout.VBox;
 import net.sf.json.JSONObject;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.session.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -35,15 +36,13 @@ public class BlogController {
     public Result likeBlog(@RequestBody JSONObject json) {
         Integer blogid = json.getInt("blogid");
         Boolean isliked = json.getBoolean("isliked");
-        User user = (User)SecurityUtils.getSubject().getPrincipal();
-        if (isliked==false)
-        {
-            if (blogService.likeBlogOrComment(user.getId(),blogid,0))
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
+        if (isliked == false) {
+            if (blogService.likeBlogOrComment(user.getId(), blogid, 0))
                 return Result.success();
             else return Result.error(ResultCode.ERROR);
-        }else if (isliked==true)
-        {
-            if (blogService.unlikeBlogOrComment(user.getId(),blogid,0))
+        } else if (isliked == true) {
+            if (blogService.unlikeBlogOrComment(user.getId(), blogid, 0))
                 return Result.success();
             else return Result.error(ResultCode.ERROR);
         }
@@ -90,6 +89,42 @@ public class BlogController {
         return Result.error(ResultCode.ERROR);
     }
 
+    @PostMapping(value = "/publish_vedio")
+    public Result publish_vedio(@RequestBody JSONObject json) {
+
+        List vediopath = json.getJSONArray("vediopath");
+        String content = json.getString("content");
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
+        Blog blog = new Blog();
+        blog.setContent(content);
+        blog.setUrlList(vediopath.toString());
+        blog.setUserid(user.getId());
+        Session session = SecurityUtils.getSubject().getSession();
+        List<String> attr = (List<String>) session.getAttribute("waite_save_vedio");
+
+        if ((vediopath == null || vediopath.size() == 0) || (attr == null || attr.size() == 0)) {
+            blog.setMediaType((short) 0);
+            blog.setDate(new Date());
+            blog.setUrlList(new ArrayList<String>().toString());
+            if (blogService.addBlog(blog)) {
+                return Result.success();
+            }
+            return Result.error(ResultCode.USER_PUBLISH_FAILE);
+        }
+        if (attr.get(0).equals(vediopath.get(0))) {
+            blog.setMediaType((short) 2);
+            blog.setDate(new Date());
+            blog.setUrlList(attr.toString());
+            if (blogService.addBlog(blog)) {
+                session.setAttribute("waite_save_vedio",null);
+                return Result.success();
+            }
+            return Result.error(ResultCode.USER_PUBLISH_FAILE);
+        }
+
+        return Result.error(ResultCode.USER_PUBLISH_FAILE);
+    }
+
 
     @PostMapping(value = "/publish")
     public Result publish(@RequestParam(value = "filelist") List<MultipartFile> filelist, @RequestParam(value = "content") String content) {
@@ -134,9 +169,6 @@ public class BlogController {
         System.out.println();
         return Result.error(ResultCode.ERROR);
     }
-
-
-
 
 
 }

@@ -19,4 +19,5 @@ public interface UserService {
     Boolean changeAvatar(Integer userid,String filename);
     List<Focus> getFocusOrFans(Integer userid,Integer type);
     Boolean isLiked(LikeTo to);
+    List<LikeTo> whoLikedMe(Integer userid);
 }

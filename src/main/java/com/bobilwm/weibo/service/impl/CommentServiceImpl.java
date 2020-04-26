@@ -32,5 +32,15 @@ public class CommentServiceImpl implements CommentService {
         return commentRepository.findById(commentid).getFromUser();
     }
 
+    @Override
+    public List<Comment> getRecentComment(Integer userid) {
+
+        return commentRepository.whoCommentMe(userid);
+    }
+
+    @Override
+    public Comment getCommentById(Long c_id) {
+        return commentRepository.findById(c_id);
+    }
 }
 

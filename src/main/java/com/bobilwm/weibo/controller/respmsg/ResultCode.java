@@ -24,12 +24,15 @@ public enum ResultCode {
     USER_FOCUS_ERROR(20008,"关注失败"),
     USER_FOCUS_TRUE(20009,"您已关注该用户"),
     USER_FOCUS_FALSE(20010,"您未关注该用户"),
+    USER_UPLOAD_VEDIO_SUCCESS(20011,"文件上传成功"),
+    USER_PUBLISH_FAILE(20012,"发布微博错误"),
+
 
     /* 业务错误：30001-39999 */
     SPECIFIED_QUESTIONED_USER_NOT_EXIST(30001, "某业务出现问题"),
 
     /* 系统错误：40001-49999 */
-    SYSTEM_INNER_ERROR(40001, "系统繁忙，请稍后重试"),
+    SYSTEM_INNER_ERROR(40001, "系统繁忙,请稍后重试"),
 
     /* 数据错误：50001-599999 */
     RESULE_DATA_NONE(50001, "数据未找到"),

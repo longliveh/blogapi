@@ -49,11 +49,24 @@ public class CommentController {
             else return Result.error(ResultCode.ERROR);
         }
         return Result.error(ResultCode.ERROR);
+    }
 
+    @PostMapping(value = "/whocommentme")
+    public Result whocommentme()
+    {
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
+        return Result.success(commentService.getRecentComment(user.getId()));
+    }
+
+    @PostMapping(value = "/getcommentbyid")
+    public Result getcommentbyid(@RequestBody JSONObject json)
+    {
+        Long id = json.getLong("id");
+        return Result.success(commentService.getCommentById(id));
     }
 
     @PostMapping(value = "/getcomment")
-    public Result getBlog(@RequestBody JSONObject json)
+    public Result getcomments(@RequestBody JSONObject json)
     {
         Integer orderby = json.getInt("orderby");
         Integer blogid = json.getInt("blogid");

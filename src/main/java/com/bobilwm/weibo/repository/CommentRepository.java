@@ -31,4 +31,6 @@ public interface CommentRepository extends JpaRepository<Comment,Integer> {
     @Query(value = "UPDATE comment SET star = star-1 WHERE id = ?1",nativeQuery = true)
     Integer unlikeComment(Integer commentid);
 
+    @Query(value = "SELECT 	c.*  FROM 	`comment` c 	INNER JOIN `comment` c1 ON c.id = c1.to_comment  WHERE 	c.from_user = ?1 UNION ALL SELECT 	c.*  FROM 	`comment` c 	INNER JOIN `blog` b ON c.blog_id = b.id  WHERE 	b.userid = ?1  ORDER BY 	id DESC LIMIT 10" ,nativeQuery = true)
+    List<Comment> whoCommentMe(Integer userid);
 }

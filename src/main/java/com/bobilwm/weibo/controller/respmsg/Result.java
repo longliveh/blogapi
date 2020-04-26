@@ -20,6 +20,13 @@ public class Result implements Serializable {
         this.msg = msg;
     }
 
+    public Result(ResultCode resultCode,Object data)
+    {
+        setResultCode(resultCode);
+        this.data = data;
+    }
+
+
     public static Result success() {
         Result result = new Result();
         result.setResultCode(ResultCode.SUCCESS);

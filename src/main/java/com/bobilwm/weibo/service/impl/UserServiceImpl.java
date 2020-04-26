@@ -103,4 +103,9 @@ public class UserServiceImpl implements UserService {
     public Boolean isLiked(LikeTo likeTo) {
         return likeToRepository.findByFAndTAndType(likeTo.getF(), likeTo.getT(), likeTo.getType())!=null;
     }
+
+    @Override
+    public List<LikeTo> whoLikedMe(Integer userid) {
+        return likeToRepository.getWhoLikedMe(userid);
+    }
 }

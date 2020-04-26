@@ -52,6 +52,12 @@ public class UserController {
     @Value("${file.address}")
     private String uploadPath;
 
+    @PostMapping(value = "/recentcomment")
+    public Result recentcomment(){
+
+        return  Result.success();
+    }
+
     @PostMapping(value = "/getfocusorfanslist")
     public Result getfocusorfanslist(@RequestBody JSONObject json) {
         Integer userid = json.getInt("userid");
@@ -69,6 +75,12 @@ public class UserController {
             return Result.error(ResultCode.USER_FOCUS_TRUE);
         }
         return Result.error(ResultCode.USER_FOCUS_FALSE);
+    }
+
+    @PostMapping(value = "/wholikedme")
+    public Result wholikedme(){
+        User myself = (User) SecurityUtils.getSubject().getPrincipal();
+        return Result.success(userService.whoLikedMe(myself.getId()));
     }
 
     @PostMapping(value = "/isliked")
