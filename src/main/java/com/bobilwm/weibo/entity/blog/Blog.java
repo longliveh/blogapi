@@ -21,7 +21,7 @@ public class Blog {
     @Column(columnDefinition = "text")
     private String content;
     @Column(columnDefinition = "tinyint")
-    private Short mediaType;//0：仅文字    1：图片    2：视频
+    private Short mediaType;//0：仅文字    1：图片    2：视频      3:直播
     @Column(columnDefinition = "text")
     private String urlList;//图片地址或者视频地址
     private Date date;
