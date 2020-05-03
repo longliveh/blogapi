@@ -54,6 +54,7 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/login", "anon");
         filterChainDefinitionMap.put("/regist", "anon");
         filterChainDefinitionMap.put("/ws/chat/**", "anon"); //避免拦截/websocket链接
+        filterChainDefinitionMap.put("/get**", "anon");
 
 //        filterChainDefinitionMap.put("/authc/index", "authc");
 //        filterChainDefinitionMap.put("/authc/admin", "roles[admin]");

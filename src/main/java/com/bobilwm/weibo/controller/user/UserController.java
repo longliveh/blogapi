@@ -213,6 +213,23 @@ public class UserController {
         return r;
     }
 
+    @PostMapping("/changename")
+    public Result changename(@RequestBody JSONObject json) {
+        String nickname = json.getString("nickname");
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
+        if (userService.changeName(user.getId(), nickname)) {
+            user.setNickname(nickname);
+            Subject subject = SecurityUtils.getSubject();
+            PrincipalCollection principalCollection = subject.getPrincipals();
+            String realmName = principalCollection.getRealmNames().iterator().next();
+            PrincipalCollection newPrincipalCollection =
+                    new SimplePrincipalCollection(user, realmName);
+            subject.runAs(newPrincipalCollection);
+            return Result.success();
+        }
+        return Result.error(ResultCode.ERROR);
+    }
+
     @PostMapping("/roletest")
 //    @RequiresRoles("user")
     public Result roletest() {

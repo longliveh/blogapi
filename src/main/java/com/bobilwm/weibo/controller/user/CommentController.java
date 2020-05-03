@@ -4,6 +4,7 @@ import com.bobilwm.weibo.controller.respmsg.Result;
 import com.bobilwm.weibo.controller.respmsg.ResultCode;
 import com.bobilwm.weibo.entity.User;
 import com.bobilwm.weibo.entity.blog.Blog;
+import com.bobilwm.weibo.entity.blog.Comment;
 import com.bobilwm.weibo.service.BlogService;
 import com.bobilwm.weibo.service.CommentService;
 import com.bobilwm.weibo.service.UserService;
@@ -58,6 +59,22 @@ public class CommentController {
         return Result.success(commentService.getRecentComment(user.getId()));
     }
 
+    @PostMapping(value = "/deletecomment")
+    public Result deletecomment(@RequestBody JSONObject json)
+    {
+        Long com_id = json.getLong("commentid");
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
+        Comment comment = commentService.getCommentById(com_id);
+        if (comment.getFromUser().equals(user.getId()))
+        {
+            if(commentService.deleteComment(com_id))
+            {
+                return Result.success();
+            }
+        }
+        return Result.error(ResultCode.USER_DELETE_COMMENT_FAILE);
+    }
+
     @PostMapping(value = "/getcommentbyid")
     public Result getcommentbyid(@RequestBody JSONObject json)
     {
@@ -71,7 +88,8 @@ public class CommentController {
         Integer orderby = json.getInt("orderby");
         Integer blogid = json.getInt("blogid");
         Long father = json.getLong("father");
-        List comments = commentService.getComment(orderby,blogid,father);
+        Integer comment_p = json.getInt("comment_p");
+        List comments = commentService.getComment(orderby,blogid,father,comment_p);
         return Result.success(comments);
     }
 

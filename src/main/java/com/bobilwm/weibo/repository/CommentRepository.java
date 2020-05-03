@@ -14,14 +14,20 @@ public interface CommentRepository extends JpaRepository<Comment,Integer> {
     Integer addComment(Integer blogId, String content, Long father, Integer from, Integer to, Date date);
 
     //查找一级评论 排序：时间
-    List<Comment> findAllByBlogIdAndFatherOrderByDateDesc(Integer blogId,Long father);
+    @Query(value = "SELECT * FROM `comment` WHERE blog_id = ?1 AND father = ?2 AND is_delete = ?3 ORDER BY date DESC LIMIT ?4,10",nativeQuery = true)
+    List<Comment> findAllByBlogIdAndFatherAndIsDeleteOrderByDateDesc(Integer blogId,Long father,Boolean isDelete,Integer comment_p);
 
     //查找一级评论 排序：点赞
-    List<Comment> findAllByBlogIdAndFatherOrderByStarDesc(Integer blogId,Long father);
+    @Query(value = "SELECT * FROM `comment` WHERE blog_id = ?1 AND father = ?2 AND is_delete = ?3 ORDER BY star DESC LIMIT ?4,10",nativeQuery = true)
+    List<Comment> findAllByBlogIdAndFatherAndIsDeleteOrderByStarDesc(Integer blogId,Long father,Boolean isDelete,Integer comment_p);
 
     Comment findById(Long tocomment);
 
-    Integer countCommentByBlogId(Integer blogid);
+    Integer countCommentByBlogIdAndIsDelete(Integer blogid,Boolean isDelete);
+
+    @Modifying
+    @Query(value = "UPDATE comment SET is_delete=1 WHERE id = ?1",nativeQuery = true)
+    Integer deleteComment(Long com_id);
 
     @Modifying
     @Query(value = "UPDATE comment SET star = star+1 WHERE id = ?1",nativeQuery = true)
@@ -31,6 +37,6 @@ public interface CommentRepository extends JpaRepository<Comment,Integer> {
     @Query(value = "UPDATE comment SET star = star-1 WHERE id = ?1",nativeQuery = true)
     Integer unlikeComment(Integer commentid);
 
-    @Query(value = "SELECT 	c.*  FROM 	`comment` c 	INNER JOIN `comment` c1 ON c.id = c1.to_comment  WHERE 	c.from_user = ?1 UNION ALL SELECT 	c.*  FROM 	`comment` c 	INNER JOIN `blog` b ON c.blog_id = b.id  WHERE 	b.userid = ?1  ORDER BY 	id DESC LIMIT 10" ,nativeQuery = true)
+    @Query(value = "SELECT c.* FROM (SELECT id FROM `comment` WHERE from_user = ?1) r INNER JOIN `comment` c ON r.id = c.to_comment AND c.is_delete = 0 ORDER BY id DESC LIMIT 10" ,nativeQuery = true)
     List<Comment> whoCommentMe(Integer userid);
 }

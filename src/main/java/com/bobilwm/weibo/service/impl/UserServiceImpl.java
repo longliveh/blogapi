@@ -89,6 +89,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Boolean changeName(Integer userid, String nickname) {
+        return userRepository.changeNickname(userid,nickname)>0;
+    }
+
+    @Override
     public List<Focus> getFocusOrFans(Integer userid, Integer type) {
         if (type == 10) {
             return focusRepository.findAllByF(userid);

@@ -17,12 +17,12 @@ public class CommentServiceImpl implements CommentService {
     CommentRepository commentRepository;
 
     @Override
-    public List<Comment> getComment(Integer orderby, Integer blogid, Long father) {
+    public List<Comment> getComment(Integer orderby, Integer blogid, Long father,Integer comment_p) {
         if (orderby == 0)//点赞数
         {
-            return commentRepository.findAllByBlogIdAndFatherOrderByStarDesc(blogid, father);
+            return commentRepository.findAllByBlogIdAndFatherAndIsDeleteOrderByStarDesc(blogid, father,false,comment_p);
         } else {
-            return commentRepository.findAllByBlogIdAndFatherOrderByDateDesc(blogid, father);
+            return commentRepository.findAllByBlogIdAndFatherAndIsDeleteOrderByDateDesc(blogid, father,false,comment_p);
         }
 
     }
@@ -41,6 +41,11 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public Comment getCommentById(Long c_id) {
         return commentRepository.findById(c_id);
+    }
+
+    @Override
+    public Boolean deleteComment(Long com_id) {
+        return commentRepository.deleteComment(com_id)>0;
     }
 }
 

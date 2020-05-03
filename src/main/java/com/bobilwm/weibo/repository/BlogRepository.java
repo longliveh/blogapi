@@ -17,7 +17,7 @@ public interface BlogRepository extends JpaRepository<Blog,Integer> {
     @Query(value = "INSERT INTO `comment`(blog_id,content,level,from,to,date) VALUES(?1,?2,?3,?4,?5,?6)",nativeQuery = true)
     Integer addComment(Integer blogId,String content,Integer level,Integer from,Integer to,Date date);
 
-    List<Blog> findAllByUseridOrderByDate(Integer userId);
+    List<Blog> findAllByUseridOrderByDateDesc(Integer userId);
 
     @Query(value = "SELECT star FROM `blog` WHERE id = ?1",nativeQuery = true)
     Integer getBlogStar(Integer blogig);
@@ -31,5 +31,14 @@ public interface BlogRepository extends JpaRepository<Blog,Integer> {
     Integer unlikeBlog(Integer blogid);
 
     Integer countByUserid(Integer userid);
+
+    @Query(value = "SELECT * FROM blog ORDER BY star DESC,date DESC limit ?1 , 10",nativeQuery = true)
+    List<Blog> findAllOrderByStarDesc(Integer pagination);
+
+    @Query(value = "SELECT blog.* FROM focus LEFT JOIN blog on focus.f = ?1 AND focus.t = blog.userid  ORDER BY id DESC",nativeQuery = true)
+    List<Blog> findAllByFocusOrderByDateDesc(Integer userid);
+
+    @Query(value = "SELECT blog.* FROM focus LEFT JOIN blog on focus.f = ?1 AND focus.t = blog.userid AND blog.media_type=?2  ORDER BY id DESC",nativeQuery = true)
+    List<Blog> findAllByFocusAndMediaTypeOrderByDateDesc(Integer userid,Integer mediatype);
 
 }

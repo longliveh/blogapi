@@ -17,6 +17,7 @@ public interface UserService {
     Focus addFocus(Focus focus);
     void delFocus(Focus focus);
     Boolean changeAvatar(Integer userid,String filename);
+    Boolean changeName(Integer userid,String nickname);
     List<Focus> getFocusOrFans(Integer userid,Integer type);
     Boolean isLiked(LikeTo to);
     List<LikeTo> whoLikedMe(Integer userid);

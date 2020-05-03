@@ -11,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Transactional
 @Service
@@ -33,15 +30,35 @@ public class BlogServiceImpl implements BlogService {
     public List<Blog> getBlogByUserid(Integer[] userids) {
         List<Blog> blogs = new ArrayList<>();
         for (int i = 0; i < userids.length; i++) {
-            blogs.addAll(blogRepository.findAllByUseridOrderByDate(userids[i]));
+            blogs.addAll(blogRepository.findAllByUseridOrderByDateDesc(userids[i]));
         }
         return blogs;
     }
 
     @Override
-    public List<Blog> getBlogByRandom() {
-        List<Blog> blogs = new ArrayList<>();
-        blogs.addAll(blogRepository.findAll());
+    public List<Blog> getBlog(Integer select,Integer userid,Integer pagination) {
+        List<Blog> blogs = null;
+        switch (select){
+            case 0:         //热门
+                blogs = blogRepository.findAllOrderByStarDesc(pagination);
+                break;
+            case 1:         //全部    按时间排序
+                blogs = blogRepository.findAllByFocusOrderByDateDesc(userid);
+                break;
+            case 2:         //图片    按时间排序
+                blogs = blogRepository.findAllByFocusAndMediaTypeOrderByDateDesc(userid,1);
+                break;
+            case 3:         //视频    按时间排序
+                blogs = blogRepository.findAllByFocusAndMediaTypeOrderByDateDesc(userid,2);
+                break;
+            case 4:         //直播    按时间排序
+                blogs = blogRepository.findAllByFocusAndMediaTypeOrderByDateDesc(userid,3);
+                break;
+            default:        //默认--全部    按时间排序
+                blogs = blogRepository.findAllByFocusOrderByDateDesc(userid);
+                break;
+        }
+        while (blogs.remove(null));
         return blogs;
     }
 
@@ -52,7 +69,7 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    public Long addComment(Comment comment) {
+    public Comment addComment(Comment comment) {
 //        Integer affectrow = commentRepository.addComment(
 //                comment.getBlogId(),comment.getContent(),comment.getLevel(),
 //                comment.getFrom(),comment.getTo(),comment.getDate());
@@ -61,13 +78,13 @@ public class BlogServiceImpl implements BlogService {
 //
 //        }
         Comment com = commentRepository.save(comment);
-        return com.getId();
+        return com;
     }
 
     @Override
     public Map getBlogDetail(Integer blogid) {
         Integer stars = blogRepository.getBlogStar(blogid);
-        Integer commentcount = commentRepository.countCommentByBlogId(blogid);
+        Integer commentcount = commentRepository.countCommentByBlogIdAndIsDelete(blogid,false);
         Integer sharecount = 0;
         Map<String,Integer> map = new HashMap();
         map.put("stars",stars);
@@ -128,5 +145,10 @@ public class BlogServiceImpl implements BlogService {
     @Override
     public Integer getBlogCount(Integer userid) {
         return blogRepository.countByUserid(userid);
+    }
+
+    @Override
+    public Optional<Blog> getById(Integer blogid) {
+        return blogRepository.findById(blogid);
     }
 }

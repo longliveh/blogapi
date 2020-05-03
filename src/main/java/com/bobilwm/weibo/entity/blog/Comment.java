@@ -23,4 +23,5 @@ public class Comment {
     @Column(columnDefinition = "INT default 0")
     private Integer star=0;
 
+    private Boolean isDelete = false;
 }

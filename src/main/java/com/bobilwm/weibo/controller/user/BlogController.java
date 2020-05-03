@@ -56,9 +56,19 @@ public class BlogController {
         return Result.success(map);
     }
 
-    @PostMapping(value = "/getblograndom")
-    public Result getBlogRandom() {
-        List<Blog> blogs = blogService.getBlogByRandom();
+
+    @PostMapping(value = "/getblog")
+    public Result getblog(@RequestBody JSONObject query) {
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
+        Integer select = query.getInt("query");
+        Integer pagination = query.getInt("pagination");
+        List<Blog> blogs = null;
+        if (select==0||user == null)
+        {
+            blogs = blogService.getBlog(select,0,pagination);
+        }else {
+            blogs = blogService.getBlog(select,user.getId(),pagination);
+        }
         return Result.success(blogs);
     }
 
@@ -68,6 +78,13 @@ public class BlogController {
         Integer[] userids = {userid};
         List<Blog> blogs = blogService.getBlogByUserid(userids);
         return Result.success(blogs);
+    }
+
+    @PostMapping(value = "/getblogbyid")
+    public Result getblogbyid(@RequestBody JSONObject json) {
+        Integer blogid = (Integer) json.get("blogid");
+        Optional<Blog> res = blogService.getById(blogid);
+        return Result.success(res.get());
     }
 
     @PostMapping(value = "/get_comment")
@@ -80,10 +97,10 @@ public class BlogController {
         User user = (User) SecurityUtils.getSubject().getPrincipal();
         comment.setFromUser(user.getId());
         comment.setDate(new Date());
-        Long comment_id = blogService.addComment(comment);
-        if (comment_id > 0) {
+        Comment res_com = blogService.addComment(comment);
+        if (res_com.getId() > 0) {
             HashMap map = new HashMap<String, Long>();
-            map.put("comment_id", comment_id);
+            map.put("comment", res_com);
             return Result.success(map);
         }
         return Result.error(ResultCode.ERROR);

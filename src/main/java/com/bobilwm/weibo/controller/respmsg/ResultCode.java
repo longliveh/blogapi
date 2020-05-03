@@ -27,6 +27,7 @@ public enum ResultCode {
     USER_UPLOAD_VEDIO_SUCCESS(20011,"文件上传成功"),
     USER_PUBLISH_FAILE(20012,"发布微博错误"),
     USER_CREATELIVE_FAILE(20013,"创建直播失败"),
+    USER_DELETE_COMMENT_FAILE(20014,"删除评论失败"),
 
 
     /* 业务错误：30001-39999 */

@@ -38,4 +38,8 @@ public interface UserRepository extends JpaRepository<User,Integer> {
     @Modifying
     @Query(value = "UPDATE `user` SET avatar = ?2 WHERE id = ?1",nativeQuery = true)
     Integer changeAvatar(Integer userid, String avatar);
+
+    @Modifying
+    @Query(value = "UPDATE `user` SET nickname = ?2 WHERE id = ?1",nativeQuery = true)
+    Integer changeNickname(Integer userid, String nickname);
 }
