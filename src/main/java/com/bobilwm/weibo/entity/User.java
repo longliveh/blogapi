@@ -21,11 +21,12 @@ public class User implements Serializable {
     private Integer id;
     private String tel;
     private String nickname;
+    private Integer sex;
     @Column(unique = true)
     private String email;
     private String password;
     private String salt;
-    private String avatar="default_avatar";
+    private String avatar="default_avatar.jpg";
     @ManyToMany(fetch = FetchType.EAGER,cascade = {CascadeType.REMOVE,CascadeType.REFRESH})
     @JoinTable(
             name = "USER_ROlE",
