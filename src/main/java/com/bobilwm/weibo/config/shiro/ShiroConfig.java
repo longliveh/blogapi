@@ -49,7 +49,7 @@ public class ShiroConfig {
 
 
         Map<String, String> filterChainDefinitionMap = new HashMap<String, String>();
-        filterChainDefinitionMap.put("/static/**", "anon");//测试注释
+            filterChainDefinitionMap.put("/static/**", "anon");//测试注释
 //        filterChainDefinitionMap.put("/*", "anon");//未登录测试时候开
         filterChainDefinitionMap.put("/login", "anon");
         filterChainDefinitionMap.put("/regist", "anon");

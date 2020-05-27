@@ -41,4 +41,6 @@ public interface BlogRepository extends JpaRepository<Blog,Integer> {
     @Query(value = "SELECT blog.* FROM focus LEFT JOIN blog on focus.f = ?1 AND focus.t = blog.userid AND blog.media_type=?2  ORDER BY id DESC",nativeQuery = true)
     List<Blog> findAllByFocusAndMediaTypeOrderByDateDesc(Integer userid,Integer mediatype);
 
+    @Query(value = "SELECT * FROM blog WHERE content like ?1",nativeQuery = true)
+    List<Blog> searchBlogContent(String str);
 }

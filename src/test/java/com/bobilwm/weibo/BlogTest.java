@@ -6,6 +6,7 @@ import com.bobilwm.weibo.entity.blog.LikeTo;
 import com.bobilwm.weibo.repository.BlogRepository;
 import com.bobilwm.weibo.repository.CommentRepository;
 import com.bobilwm.weibo.repository.LikeToRepository;
+import com.bobilwm.weibo.repository.UserRepository;
 import com.bobilwm.weibo.service.BlogService;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.junit.jupiter.api.Test;
@@ -146,5 +147,17 @@ public class BlogTest {
         connection.close();
 
     }
+
+
+    @Autowired
+    UserRepository userRepository;
+
+    @Test
+    void searchBlog()
+    {
+        List list = userRepository.searchUserNickname("q");;
+        System.out.println();
+    }
+
 
 }

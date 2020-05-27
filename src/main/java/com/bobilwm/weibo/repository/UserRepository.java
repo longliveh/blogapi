@@ -1,9 +1,12 @@
 package com.bobilwm.weibo.repository;
 
 import com.bobilwm.weibo.entity.User;
+import com.bobilwm.weibo.entity.blog.Blog;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+
+import java.util.List;
 
 //JpaRepository<T,ID>：T 需要类型化为实体类(Entity)User，ID需要实体类User中Id（我定义的Id类型是Long）的类型
 public interface UserRepository extends JpaRepository<User,Integer> {
@@ -42,4 +45,7 @@ public interface UserRepository extends JpaRepository<User,Integer> {
     @Modifying
     @Query(value = "UPDATE `user` SET nickname = ?2 WHERE id = ?1",nativeQuery = true)
     Integer changeNickname(Integer userid, String nickname);
+
+    @Query(value = "SELECT id FROM `user` WHERE nickname like ?1",nativeQuery = true)
+    List<Integer> searchUserNickname(String str);
 }
